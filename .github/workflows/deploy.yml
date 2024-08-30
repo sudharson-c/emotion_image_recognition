@@ -38,8 +38,8 @@ jobs:
       #          aws s3 sync . s3://your-s3-bucket-name --exclude ".git/*" --exclude ".github/*"
       - name: Initialize Elastic Beanstalk
         run: |
-          eb init -p python-3.9 face-emotions --region ap-south-1
+          eb init -p python-3.9 emotion-recognition --region ap-south-1
 
       - name: Deploy to Elastic Beanstalk
         run: |
-          eb deploy Face-emotions-qa
+          eb deploy Emotion-recognition-qa
