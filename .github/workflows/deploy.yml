@@ -16,7 +16,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.8'  # Specify your Python version
+          python-version: '3.9.6'  # Specify your Python version
 
       - name: Install AWS CLI
         run: |
@@ -38,7 +38,7 @@ jobs:
       #          aws s3 sync . s3://your-s3-bucket-name --exclude ".git/*" --exclude ".github/*"
       - name: Initialize Elastic Beanstalk
         run: |
-          eb init -p python-3.8 emotion_image --region ap-south-1
+          eb init -p python-3.9.6 emotion_image --region ap-south-1
 
       - name: Deploy to Elastic Beanstalk
         run: |
