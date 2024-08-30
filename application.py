@@ -4,7 +4,7 @@ from tensorflow.keras.preprocessing import image
 import numpy as np
 import io
 
-app = Flask(__name__)
+application = Flask(__name__)
 
 # Load the trained model
 model = load_model('mood_detection_model.h5')
@@ -12,7 +12,7 @@ model = load_model('mood_detection_model.h5')
 # Define a dictionary to map class indices to mood labels
 class_labels = {0: 'happy', 1: 'sad', 2: 'neutral'}
 
-@app.route('/predict', methods=['POST'])
+@application.route('/predict', methods=['POST'])
 def predict():
     if 'file' not in request.files:
         return jsonify({'error': 'No file part'}), 400
@@ -38,4 +38,4 @@ def predict():
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    application.run(debug=True)
