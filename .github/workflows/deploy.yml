@@ -31,14 +31,14 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-west-2  # Modify as per your region
+          aws-region: ${{ secrets.AWS_REGION }}  # Modify as per your region
 
       #      - name: Deploy to S3
       #        run: |
       #          aws s3 sync . s3://your-s3-bucket-name --exclude ".git/*" --exclude ".github/*"
       - name: Initialize Elastic Beanstalk
         run: |
-          eb init -p python-3.8 emotion_image --region us-west-2
+          eb init -p python-3.8 emotion_image --region ap-south-1
 
       - name: Deploy to Elastic Beanstalk
         run: |
