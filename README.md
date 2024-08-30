@@ -1,10 +1,10 @@
 
 # Create following structure in training data
-src/training_data/happy
-src/training_data/neutral
-src/training_data/sad
+training_data/happy
+training_data/neutral
+training_data/sad
 
-cd src 
+
 
 python3 model.py 
 
