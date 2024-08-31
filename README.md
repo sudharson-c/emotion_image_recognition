@@ -1,7 +1,10 @@
 
 # Create following structure in training data
-training_data/happy
+training_data/happy 
+
 training_data/neutral
+
+
 training_data/sad
 
 
