@@ -38,16 +38,22 @@ jobs:
       #          aws s3 sync . s3://your-s3-bucket-name --exclude ".git/*" --exclude ".github/*"
       - name: Install dependencies
         run: |
+          python -m venv venv
+          source venv/bin/activate
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Package application
+      - name: Package application with dependencies
         run: |
-          tar -czf app.tar.gz .
+          mkdir -p package
+          cp -r * package/ || true
+          cp -r venv/lib/python3.9/site-packages/* package/ || true
+          cd package
+          zip -r ../app.zip . || true
 
       - name: Upload to S3
         run: |
-          aws s3 cp app.tar.gz s3://${{ secrets.S3_BUCKET }}/app/app.tar.gz --acl public-read
+          aws s3 cp app.zip s3://${{ secrets.S3_BUCKET }}/app.zip
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -58,7 +64,7 @@ jobs:
           aws elasticbeanstalk create-application-version \
             --application-name emotion-recognition \
             --version-label ${{ github.sha }} \
-            --source-bundle S3Bucket=${{ secrets.S3_BUCKET }},S3Key=app/app.tar.gz
+            --source-bundle S3Bucket=${{ secrets.S3_BUCKET }},S3Key=app.zip
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
