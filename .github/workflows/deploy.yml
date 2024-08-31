@@ -38,6 +38,7 @@ jobs:
       #          aws s3 sync . s3://your-s3-bucket-name --exclude ".git/*" --exclude ".github/*"
       - name: Install dependencies
         run: |
+          pip install boto3
           python -m venv venv
           source venv/bin/activate
           python -m pip install --upgrade pip
