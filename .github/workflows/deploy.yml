@@ -41,10 +41,35 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Initialize Elastic Beanstalk
+      - name: Package application
         run: |
-          eb init -p python-3.9 emotion-recognition --region ap-south-1
+          tar -czf app.tar.gz .
 
-      - name: Deploy to Elastic Beanstalk
+      - name: Upload to S3
         run: |
-          eb deploy Emotion-recognition-qa --timeout 30
+          aws s3 cp app.tar.gz s3://${{ secrets.S3_BUCKET }}/app/app.tar.gz --acl public-read
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+
+      - name: Create Application Version
+        run: |
+          aws elasticbeanstalk create-application-version \
+            --application-name emotion-recognition \
+            --version-label ${{ github.sha }} \
+            --source-bundle S3Bucket=${{ secrets.S3_BUCKET }},S3Key=app/app.tar.gz
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+
+      - name: Update Elastic Beanstalk Environment
+        run: |
+          aws elasticbeanstalk update-environment \
+            --environment-name  Emotion-recognition-qa \
+            --version-label ${{ github.sha }}
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
